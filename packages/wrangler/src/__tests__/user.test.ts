@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import fetchMock from "jest-fetch-mock";
-import { getConfigPath } from "../config-path";
 import {
 	loginOrRefreshIfRequired,
 	readAuthConfigFile,
@@ -9,6 +8,7 @@ import {
 	USER_AUTH_CONFIG_FILE,
 	writeAuthConfigFile,
 } from "../user";
+import { getGlobalWranglerConfigPath } from "../wrangler-config-path";
 import { mockConsoleMethods } from "./helpers/mock-console";
 import { useMockIsTTY } from "./helpers/mock-istty";
 import { mockOAuthFlow } from "./helpers/mock-oauth-flow";
@@ -86,7 +86,10 @@ describe("User", () => {
 			expect(fetchMock).toHaveBeenCalledTimes(1);
 
 			// Make sure that logout removed the config file containing the auth tokens.
-			const config = path.join(getConfigPath(), USER_AUTH_CONFIG_FILE);
+			const config = path.join(
+				getGlobalWranglerConfigPath(),
+				USER_AUTH_CONFIG_FILE
+			);
 			expect(fs.existsSync(config)).toBeFalsy();
 		});
 	});

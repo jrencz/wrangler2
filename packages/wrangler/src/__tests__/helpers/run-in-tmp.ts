@@ -5,16 +5,21 @@ import { reinitialiseAuthTokens } from "../../user";
 
 const originalCwd = process.cwd();
 
+function cleanupTempDir(dir: string | undefined, prevCWD: string) {
+	if (dir && fs.existsSync(dir)) {
+		process.chdir(prevCWD);
+		fs.rmSync(dir, { recursive: true });
+	}
+}
+
 export function runInTempDir(
 	{ homedir }: { homedir?: string } = { homedir: "./home" }
 ) {
-	let tmpDir: string;
+	let tmpDir: string | undefined;
+	let spiedHomedir: jest.SpyInstance | undefined;
 
 	beforeAll(() => {
-		if (tmpDir !== undefined) {
-			process.chdir(originalCwd);
-			fs.rmSync(tmpDir, { recursive: true });
-		}
+		cleanupTempDir(tmpDir, originalCwd);
 	});
 
 	beforeEach(() => {
@@ -33,14 +38,14 @@ export function runInTempDir(
 			// rather than an alias to the module (e.g. `import * as os from "node:os";`).
 			// This is because the module gets transpiled so that the "method" `homedir()` gets converted to a
 			// getter that is not configurable (and so cannot be spied upon).
-			jest.spyOn(os, "homedir").mockReturnValue(absHomedir);
+			spiedHomedir?.mockReturnValue(absHomedir);
 			// Now that we have changed the home directory location, we must reinitialize the user auth state
 			reinitialiseAuthTokens();
 		}
 	});
 
 	afterEach(() => {
-		process.chdir(originalCwd);
-		fs.rmSync(tmpDir, { recursive: true });
+		cleanupTempDir(tmpDir, originalCwd);
+		spiedHomedir?.mockRestore();
 	});
 }
