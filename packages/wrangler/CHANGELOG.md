@@ -1,5 +1,46 @@
 # wrangler
 
+## 2.0.17
+
+### Patch Changes
+
+- [#1389](https://github.com/cloudflare/wrangler2/pull/1389) [`eab9542`](https://github.com/cloudflare/wrangler2/commit/eab95429e3bdf274c82db050856c8c675d7fb10d) Thanks [@caass](https://github.com/caass)! - Remove delegation message when global wrangler delegates to a local installation
+
+  A message used for debugging purposes was accidentally left in, and confused some
+  folks. Now it'll only appear when `WRANGLER_LOG` is set to `debug`.
+
+* [#1406](https://github.com/cloudflare/wrangler2/pull/1406) [`0f35556`](https://github.com/cloudflare/wrangler2/commit/0f35556271ed27efd6fcc581646c2d2d8f520276) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: use fork to let wrangler know miniflare is ready
+
+  This PR replaces our use of `spawn` in favour of `fork` to spawn miniflare in wrangler's dev function. This lets miniflare let wrangler know when we're ready to send requests.
+
+  Closes #1408
+
+- [#1424](https://github.com/cloudflare/wrangler2/pull/1424) [`8cf0008`](https://github.com/cloudflare/wrangler2/commit/8cf00084fda9bbbc7482e4186b91dbb7a258db52) Thanks [@caass](https://github.com/caass)! - Check for assets in config file as well as CLI arg
+
+  Allow specifying `[assets]` in a wrangler.toml file.
+
+* [#1415](https://github.com/cloudflare/wrangler2/pull/1415) [`f3a8452`](https://github.com/cloudflare/wrangler2/commit/f3a84520960c163df7ada0c1dd1f784db9ca8497) Thanks [@caass](https://github.com/caass)! - Emit type declarations for wrangler
+
+  This is a first go-round of emitting type declarations alongside the bundled JS output,
+  which should make it easier to use wrangler as a library.
+
+- [#1433](https://github.com/cloudflare/wrangler2/pull/1433) [`1c1214f`](https://github.com/cloudflare/wrangler2/commit/1c1214fc574eb9a46faadfb9ae21e3cc5dbc5836) Thanks [@threepointone](https://github.com/threepointone)! - polish: adds an actionable message when a worker name isn't provided to tail/secret
+
+  Just a better error message when a Worker name isn't available for `wrangler secret` or `wrangler tail`.
+
+  Closes https://github.com/cloudflare/wrangler2/issues/1380
+
+* [#1427](https://github.com/cloudflare/wrangler2/pull/1427) [`3fa5041`](https://github.com/cloudflare/wrangler2/commit/3fa50413ebf70ba69d0ecfadddcbfabb88d273fe) Thanks [@caass](https://github.com/caass)! - Check `npm_config_user_agent` to guess a user's package manager
+
+  The environment variable `npm_config_user_agent` can be used to guess the package manager
+  that was used to execute wrangler. It's imperfect (just like regular user agent sniffing!)
+  but the package managers we support all set this property:
+
+  - [npm](https://github.com/npm/cli/blob/1415b4bdeeaabb6e0ba12b6b1b0cc56502bd64ab/lib/utils/config/definitions.js#L1945-L1979)
+  - [pnpm](https://github.com/pnpm/pnpm/blob/cd4f9341e966eb8b411462b48ff0c0612e0a51a7/packages/plugin-commands-script-runners/src/makeEnv.ts#L14)
+  - [yarn](https://yarnpkg.com/advanced/lifecycle-scripts#environment-variables)
+  - [yarn classic](https://github.com/yarnpkg/yarn/pull/4330)
+
 ## 2.0.16
 
 ### Patch Changes
